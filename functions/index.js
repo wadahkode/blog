@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resizeWin = new ResizeObserver(main);
   resizeWin.observe(document.body);
 
-  pageHandler(location.search);
+  pageHandler(location);
 });
 
 for (let i = 320; i <= window.screen.width; i++) {
