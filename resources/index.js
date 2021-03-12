@@ -22,7 +22,7 @@ export const render = async function (parentNode, childNodes) {
 
   const clear = await document.body.insertBefore(
     parentNode,
-    document.body.querySelector("noscript")
+    document.body.querySelector("script")
   );
 
   if (clear.innerHTML !== null || clear.innerHTML !== "") {
