@@ -1,17 +1,17 @@
 {
-  "name": "simpel-toko-online",
-  "version": "1.0.0",
+  "name": "blog",
+  "version": "0.0.1",
   "description": "",
   "main": "webpack.common.js",
   "scripts": {
     "start": "webpack --watch --config webpack.dev.js",
-    "watch:css": "sass --watch ./styles.scss:public/css/simpel-toko-online.css",
-    "build:css": "sass ./styles.scss:public/css/simpel-toko-online.css",
+    "watch:css": "sass --watch ./styles.scss:public/css/blog.css",
+    "build:css": "sass ./styles.scss:public/css/blog.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "wadahkode <mvp.dedefilaras@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "html-loader": "^2.1.2",
