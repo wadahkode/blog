@@ -1,13 +1,11 @@
-import { admin } from "./routes/admin";
+import { routeList } from "./routes";
 
-const pages = { admin };
-
-export const pageHandler = async function (query = String | "") {
+export const pageHandler = async (query = String | "") => {
   if (query == "") return false;
   if (!query.match(/\?p=.*/g)) return false;
 
   query = encodeURI(query.replace(/\?p=/g, ""));
   if (query == "") return false;
 
-  return pages[query]();
+  return Blog.render(document.querySelector("#root"), await routeList[query]());
 };
