@@ -11,7 +11,11 @@ export const pageHandler = async (url = String | "") => {
       String(url.pathname).slice(1).charAt(0).toUpperCase() +
       String(url.pathname).slice(2);
 
-    content += await routeList[controller]();
+    if (!routeList.hasOwnProperty(controller)) {
+      content += await routeList["Error"].e404();
+    } else {
+      content += await routeList[controller]();
+    }
   } else {
     if (url.pathname == "/" && url.searchParams.get("q") == null) {
       content += await routeList[controller]();
