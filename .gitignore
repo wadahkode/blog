@@ -1,0 +1,8 @@
+public/css
+package-lock.json
+node_modules
+functions/styles
+scss/utility
+scss/dashboard.scss
+scss/dropdown.scss
+scss/__mixin.scss
