@@ -4,6 +4,6 @@ const loader = function (filename) {
   return path.join("./pages", filename + ".html");
 };
 
-export const request = async function (name) {
+export const createView = async function (name) {
   return require(`./${loader(name)}`).default;
 };
