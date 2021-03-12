@@ -2,7 +2,7 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const serverConfig = {
-  entry: { blog: "./src/index.js" },
+  entry: { blog: "./resources/index.js" },
   target: "node",
   plugins: [
     // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin

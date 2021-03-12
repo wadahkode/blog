@@ -1,14 +1,6 @@
-const root = document.querySelector("#root");
+import { admin } from "./routes/admin";
 
-const pages = {
-  admin: async function () {
-    root.innerHTML = await Blog.request("admin");
-  },
-
-  "admin/login": async function () {
-    root.innerHTML = "";
-  },
-};
+const pages = { admin };
 
 export const pageHandler = async function (query = String | "") {
   if (query == "") return false;
