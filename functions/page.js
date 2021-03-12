@@ -7,5 +7,8 @@ export const pageHandler = async (query = String | "") => {
   query = encodeURI(query.replace(/\?p=/g, ""));
   if (query == "") return false;
 
-  return Blog.render(document.querySelector("#root"), await routeList[query]());
+  return await Blog.render(
+    document.querySelector("#root"),
+    await routeList[query]()
+  );
 };
