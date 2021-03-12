@@ -1,36 +1,27 @@
 import { routeList } from "./routes";
 
 export const pageHandler = async (url = String | "") => {
-  let filePath = new URL(url);
-  if (filePath.search == "") {
-    if (filePath.pathname == "/") {
-      filePath = "Index";
-    } else {
-      filePath =
-        String(filePath.pathname).slice(1).charAt(0).toUpperCase() +
-        String(filePath.pathname).slice(2);
+  let controller = "Welcome",
+    content = "";
 
-      return await Blog.render(
-        document.querySelector("#root"),
-        await routeList[filePath]()
+  url = new URL(url);
+
+  if (url.pathname != "/" && url.searchParams.get("q") == null) {
+    controller =
+      String(url.pathname).slice(1).charAt(0).toUpperCase() +
+      String(url.pathname).slice(2);
+
+    content += await routeList[controller]();
+  } else {
+    if (url.pathname == "/" && url.searchParams.get("q") == null) {
+      content += await routeList[controller]();
+    } else {
+      controller = "Search";
+      content += await routeList[controller](
+        encodeURI(url.searchParams.get("q"))
       );
     }
-  } else {
   }
-  // if (query == "") return false;
-  // if (!query.match(/\?p=.*/g)) return false;
 
-  // query = encodeURI(query.replace(/\?p=/g, ""));
-  // if (query == "") return false;
-
-  // const q = query.split(/\//g);
-  // let resultQuery = "";
-  // q.forEach((item) => {
-  //   resultQuery += String(item).charAt(0).toUpperCase() + String(item).slice(1);
-  // });
-
-  // return await Blog.render(
-  //   document.querySelector("#root"),
-  //   await routeList[resultQuery]()
-  // );
+  return await Blog.render(document.querySelector("#root"), content);
 };
