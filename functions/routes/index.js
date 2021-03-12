@@ -1,3 +1,3 @@
-import { admin } from "./admin";
+import { Admin, AdminLogin } from "./admin";
 
-export const routeList = { admin };
+export const routeList = { Admin, AdminLogin };
