@@ -58,6 +58,10 @@ const clientConfig = {
         test: /\.html$/i,
         loader: "html-loader",
       },
+      {
+        test: /\.scss$/i,
+        loader: "sass-loader",
+      },
     ],
   },
 };

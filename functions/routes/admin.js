@@ -1,5 +1,7 @@
 const root = document.querySelector("#root");
 
 export const admin = async function () {
-  root.innerHTML = await Blog.createView("admin");
+  const view = await Blog.createView("admin");
+
+  return Blog.render(root, view);
 };
