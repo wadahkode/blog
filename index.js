@@ -1,89 +1,144 @@
+/**
+ * Fungsi utama untuk menjalankan server
+ *
+ * @author wadahkode <mvp.dedefilaras@gmail.com>
+ * @since 0.0.1
+ */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const port = process.env.PORT || 4000;
-const hostname = "127.0.0.1";
+const contentType = {
+  ".html": "text/html",
+  ".js": "text/javascript",
+  ".min.js": "text/javascript",
+  ".css": "text/css",
+  ".min.css": "text/css",
+  ".ico": "image/x-icon",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpg",
+  ".gif": "image/gif",
+  ".svg": "image/svg+xml",
+  ".wav": "audio/wav",
+  ".mp4": "video/mp4",
+  ".woff": "application/font-woff",
+  ".ttf": "application/font-ttf",
+  ".eot": "application/vnd.ms-fontobject",
+  ".otf": "application/font-otf",
+  ".wasm": "application/wasm",
+};
+let bodyContent = "",
+  stream;
 
-const server = http.createServer(async (req, res) => {
+async function main(req, res) {
   let filePath = req.url;
+  let mimeType = contentType[String(path.extname(filePath)).toLowerCase()];
 
-  if (req.url != "/") {
-    filePath = await loader(filePath);
+  if (filePath !== "/" && mimeType !== undefined) {
+    filePath = loader("public", filePath);
+    mimeType = contentType[String(path.extname(filePath)).toLowerCase()];
 
-    if (!fs.existsSync(filePath)) {
-      filePath = await loader("./index.html");
-      const stream = fs.createReadStream(filePath);
-      const contentType = {
-        ".html": "text/html",
-        ".css": "text/css",
-        ".js": "text/javascript",
-      };
-
-      const mimeType = contentType[path.extname(String(filePath))];
-      stream.on("data", (chunk) => {
-        res
-          .writeHead(res.statusCode, {
-            "Content-Type": mimeType,
-          })
-          .end(chunk);
-      });
-      stream.on("error", async (error) => {
-        res
-          .writeHead(404, {
-            "Content-Type": "text/plain",
-          })
-          .end(error.message);
-      });
-    } else {
-      const stream = fs.createReadStream(filePath);
-      const contentType = {
-        ".html": "text/html",
-        ".css": "text/css",
-        ".js": "text/javascript",
-      };
-
-      const mimeType = contentType[path.extname(String(filePath))];
-      stream.on("data", (chunk) => {
-        res
-          .writeHead(res.statusCode, {
-            "Content-Type": mimeType,
-          })
-          .end(chunk);
-      });
-      stream.on("error", async (error) => {
-        res
-          .writeHead(404, {
-            "Content-Type": "text/plain",
-          })
-          .end(error.message);
-      });
-    }
-  } else {
-    if (filePath == "/") {
-      filePath = await loader(filePath + "index.html");
-    }
-
-    const stream = fs.createReadStream(filePath);
+    // let's stream
+    stream = fs.createReadStream(filePath);
+    stream.on("ready", () => stream.pipe(res));
     stream.on("data", (chunk) => {
       res
-        .writeHead(200, {
-          "Content-Type": "text/html",
+        .writeHead(res.statusCode, {
+          "Content-Type": mimeType,
+          "Content-Length": Buffer.byteLength(chunk),
         })
-        .end(chunk);
+        .write(chunk);
     });
+    stream.on("error", (err) => {
+      if (err.code == "ENOENT") {
+        res.writeHead(404, {
+          "Content-Type": mimeType,
+        });
+      }
 
-    stream.on("error", (error) => {
+      console.log(
+        "🌏 %s %s %s %s",
+        req.method,
+        res.statusCode,
+        new Date(),
+        req.url
+      );
+    });
+    stream.on("close", () => stream.close());
+  } else {
+    filePath = loader(
+      "app/views",
+      filePath == "/" ? "welcome.html" : filePath + ".html"
+    );
+
+    if (!fs.existsSync(filePath)) {
       res
         .writeHead(404, {
-          "Content-Type": "text/plain",
+          "Content-Type":
+            contentType[String(path.extname(filePath)).toLowerCase()],
         })
-        .end(error.message);
-    });
+        .end(fs.readFileSync(loader("app/errors", "404.html")));
+    } else {
+      // let's stream
+      stream = fs.createReadStream(filePath);
+      stream.on("ready", () => stream.pipe(res));
+      stream.on("data", (chunk) => (bodyContent = chunk));
+      stream.on("error", (err) => {
+        if (err.code == "ENOENT") {
+          res.writeHead(404, {
+            "Content-Type": mimeType,
+          });
+        }
+        console.log(
+          "🌏 %s %s %s %s",
+          req.method,
+          res.statusCode,
+          new Date(),
+          req.url
+        );
+      });
+      stream.on("close", () => stream.close());
+    }
   }
-});
 
-const loader = async (filename) => path.join(__dirname, "public/" + filename);
+  filePath = loader("public", "/index.html");
 
-server.listen(port, () =>
-  console.log(`Server running on http://${hostname}:${port}`)
-);
+  // let's stream
+  stream = fs.createReadStream(filePath);
+  stream.on("ready", () => stream.pipe(res));
+  stream.on("data", (chunk) => {
+    let content = chunk.toString().match(/\{\{[\s\S]+\}\}/i);
+
+    chunk = chunk.toString().replace(content[0], bodyContent);
+
+    res
+      .writeHead(res.statusCode, {
+        "Content-Type":
+          contentType[String(path.extname(filePath)).toLowerCase()],
+        "Content-Length": Buffer.byteLength(chunk),
+      })
+      .write(chunk);
+
+    console.log(
+      "🌏 %s %s %s %s",
+      req.method,
+      res.statusCode,
+      new Date(),
+      req.url
+    );
+  });
+  stream.on("error", (err) => console.error(err));
+  stream.on("close", () => stream.close());
+  stream.on("end", () => res.end());
+}
+
+function loader(dirname, filename) {
+  return path.join(path.resolve(dirname), filename);
+}
+
+http
+  .createServer(main)
+  .listen(port, () =>
+    console.log(`Server running on http://127.0.0.1:${port}`)
+  );
