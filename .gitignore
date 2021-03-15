@@ -3,3 +3,6 @@ public/css/*
 package-lock.json
 node_modules
 olders
+
+public/js/*
+!.gitkeep

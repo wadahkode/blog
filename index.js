@@ -137,8 +137,8 @@ function loader(dirname, filename) {
   return path.join(path.resolve(dirname), filename);
 }
 
-http
-  .createServer(main)
-  .listen(port, () =>
-    console.log(`Server running on http://127.0.0.1:${port}`)
-  );
+const app = http.createServer(main);
+
+app.listen(port, () =>
+  console.log(`Server running on http://127.0.0.1:${port}`)
+);
