@@ -35,7 +35,7 @@ async function main(req, res) {
   let filePath = req.url;
   let mimeType = contentType[String(path.extname(filePath)).toLowerCase()];
 
-  if (filePath !== "/" && mimeType !== undefined) {
+  if ((filePath !== "/" || filePath !== "/admin/") && mimeType !== undefined) {
     filePath = loader("public", filePath);
     mimeType = contentType[String(path.extname(filePath)).toLowerCase()];
 
@@ -69,7 +69,11 @@ async function main(req, res) {
   } else {
     filePath = loader(
       "app/views",
-      filePath == "/" ? "welcome.html" : filePath + ".html"
+      filePath == "/"
+        ? "welcome.html"
+        : filePath == "/admin"
+        ? "admin/index.html"
+        : filePath + ".html"
     );
 
     if (!fs.existsSync(filePath)) {

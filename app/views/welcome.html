@@ -3,14 +3,38 @@
     background-color: #eee;
   }
 
-  h1 {
-    color: black;
-    font-size: 24pt;
+  .navbar {
+    padding: 1rem 2rem;
+  }
+
+  .navbar-right {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  main {
+    margin-top: 2rem;
+    margin-left: 2rem;
   }
 </style>
 
-<h1>Welcome to jungle!</h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="navbar-left">
+    <a href="/" class="navbar-brand">Blog</a>
+  </div>
+
+  <ul class="navbar-right">
+    <li><a href="/" class="nav-link">Home</a></li>
+    <li><a href="/about" class="nav-link">About</a></li>
+  </ul>
+</nav>
+
+<main>
+  <h1 class="text-secondary">Welcome to jungle!</h1>
+</main>
 
 <script>
-  console("Welcome to jungle!");
+  document.title = "Welcome to jungle!";
 </script>
