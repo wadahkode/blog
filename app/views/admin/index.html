@@ -5,7 +5,7 @@
   /* sign in FORM */
   #logreg-forms {
     width: 412px;
-    margin: 10vh auto;
+    margin: 15vh auto;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -125,30 +125,21 @@
 </style>
 
 <div id="logreg-forms" class="p-4">
-  <form class="form-signin">
-    <h1
-      class="h3 mb-3 font-weight-normal text-secondary"
-      style="text-align: center"
-    >
-      Welcome to admin
-    </h1>
+  <div class="login alert collapse"></div>
+  <form class="form-signin" method="POST">
+    <h1 class="h3 mb-3 font-weight-normal text-secondary" style="text-align: center">Welcome to admin</h1>
     <input
       type="email"
-      id="inputEmail"
+      id="emailLogin"
+      name="email"
       class="form-control"
       placeholder="Email address"
       required=""
       autofocus=""
     />
-    <input
-      type="password"
-      id="inputPassword"
-      class="form-control"
-      placeholder="Password"
-      required=""
-    />
+    <input type="password" id="passwordLogin" name="password" class="form-control" placeholder="Password" required="" />
 
-    <button class="btn btn-success btn-block" type="submit">
+    <button type="button" id="btn-login" class="btn btn-success btn-block">
       <i class="fas fa-sign-in-alt"></i> Sign in
     </button>
     <a href="#" id="forgot_pswd">Forgot password?</a>
@@ -160,17 +151,8 @@
   </form>
 
   <form action="/reset/password/" class="form-reset">
-    <input
-      type="email"
-      id="resetEmail"
-      class="form-control"
-      placeholder="Email address"
-      required=""
-      autofocus=""
-    />
-    <button class="btn btn-primary btn-block" type="submit">
-      Reset Password
-    </button>
+    <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="" />
+    <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
     <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
   </form>
 
@@ -214,9 +196,7 @@
       autofocus=""
     />
 
-    <button class="btn btn-primary btn-block" type="submit">
-      <i class="fas fa-user-plus"></i> Sign Up
-    </button>
+    <button class="btn btn-primary btn-block" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
     <button type="button" id="cancel_signup" class="btn btn-default p-0 my-3">
       <i class="fas fa-angle-left"></i> Back
     </button>
@@ -228,22 +208,32 @@
   document.title = "Welcome to admin";
   const btnSignUp = document.getElementById("btn-signup");
   const btnCancelSignUp = document.getElementById("cancel_signup");
+  const btnLogin = document.getElementById("btn-login");
+  const alert = document.querySelector(".login.alert");
 
   btnSignUp.onclick = function () {
-    document
-      .querySelector("#logreg-forms .form-signin")
-      .classList.add("collapse");
-    document
-      .querySelector("#logreg-forms .form-signup")
-      .classList.remove("collapse");
+    document.querySelector("#logreg-forms .form-signin").classList.add("collapse");
+    document.querySelector("#logreg-forms .form-signup").classList.remove("collapse");
   };
 
   btnCancelSignUp.onclick = function () {
-    document
-      .querySelector("#logreg-forms .form-signin")
-      .classList.remove("collapse");
-    document
-      .querySelector("#logreg-forms .form-signup")
-      .classList.add("collapse");
+    document.querySelector("#logreg-forms .form-signin").classList.remove("collapse");
+    document.querySelector("#logreg-forms .form-signup").classList.add("collapse");
+  };
+
+  btnLogin.onclick = function (e) {
+    const { emailLogin, passwordLogin } = this.parentElement;
+    const email = emailLogin.value;
+    const password = passwordLogin.value;
+
+    if (password == "admin") {
+      location.href = "./admin/dashboard";
+    } else {
+      alert.classList.add("alert-warning");
+      alert.classList.remove("collapse");
+      alert.innerHTML = "Password wrong!";
+    }
+
+    e.preventDefault();
   };
 </script>

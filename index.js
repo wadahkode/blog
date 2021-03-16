@@ -57,30 +57,19 @@ async function main(req, res) {
         });
       }
 
-      console.log(
-        "🌏 %s %s %s %s",
-        req.method,
-        res.statusCode,
-        new Date(),
-        req.url
-      );
+      console.log("🌏 %s %s %s %s", req.method, res.statusCode, new Date(), req.url);
     });
     stream.on("close", () => stream.close());
   } else {
     filePath = loader(
       "app/views",
-      filePath == "/"
-        ? "welcome.html"
-        : filePath == "/admin"
-        ? "admin/index.html"
-        : filePath + ".html"
+      filePath == "/" ? "welcome.html" : filePath == "/admin" ? "admin/index.html" : filePath + ".html"
     );
 
     if (!fs.existsSync(filePath)) {
       res
         .writeHead(404, {
-          "Content-Type":
-            contentType[String(path.extname(filePath)).toLowerCase()],
+          "Content-Type": contentType[String(path.extname(filePath)).toLowerCase()],
         })
         .end(fs.readFileSync(loader("app/errors", "404.html")));
     } else {
@@ -94,13 +83,7 @@ async function main(req, res) {
             "Content-Type": mimeType,
           });
         }
-        console.log(
-          "🌏 %s %s %s %s",
-          req.method,
-          res.statusCode,
-          new Date(),
-          req.url
-        );
+        console.log("🌏 %s %s %s %s", req.method, res.statusCode, new Date(), req.url);
       });
       stream.on("close", () => stream.close());
     }
@@ -118,19 +101,12 @@ async function main(req, res) {
 
     res
       .writeHead(res.statusCode, {
-        "Content-Type":
-          contentType[String(path.extname(filePath)).toLowerCase()],
+        "Content-Type": contentType[String(path.extname(filePath)).toLowerCase()],
         "Content-Length": Buffer.byteLength(chunk),
       })
       .write(chunk);
 
-    console.log(
-      "🌏 %s %s %s %s",
-      req.method,
-      res.statusCode,
-      new Date(),
-      req.url
-    );
+    console.log("🌏 %s %s %s %s", req.method, res.statusCode, new Date(), req.url);
   });
   stream.on("error", (err) => console.error(err));
   stream.on("close", () => stream.close());
@@ -143,6 +119,4 @@ function loader(dirname, filename) {
 
 const app = http.createServer(main);
 
-app.listen(port, () =>
-  console.log(`Server running on http://127.0.0.1:${port}`)
-);
+app.listen(port, () => console.log(`Server running on http://127.0.0.1:${port}`));
